@@ -1,35 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, View, Button, Linking, Alert } from 'react-native';
-import { Text } from 'react-native-elements';
-import PhoneInput from 'react-native-phone-number-input';
+import { TextInput } from 'react-native-gesture-handler';
 
-export default function Home(props) {
-
+export default function Captura(props) {
     const { navigation } = props;
 
     const [value, setValue] = useState("");
     const [valid, setValid] = useState(false);
     const phoneInput = useRef(null);
     const url = 'https://api.whatsapp.com/send?phone=';
-
-    const numeroValido = (number) => {
-        try {
-            if (number == undefined || number.lenght < 1) {
-                return false;
-            }
-            console.log("Numero recibido: " + number);
-            if (number.indexOf("+") == 0) {
-                number = number.substring(1, number.lenght);
-                console.log("Numero convertido: " + number);
-            }
-            return !isNaN(new Number(number));
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    };
-
-
     const alertError = (openUrl) => {
         Alert.alert(
             "Número incorrecto",
@@ -59,28 +38,40 @@ export default function Home(props) {
             ]
         );
     }
+    const numeroValido = (number) => {
+        try {
+            if (number == undefined || number.lenght < 1) {
+                return false;
+            }
+            console.log("Numero recibido: " + number);
+            if (number.indexOf("+") == 0) {
+                number = number.substring(1, number.lenght);
+                console.log("Numero convertido: " + number);
+            }
+            return !isNaN(new Number(number));
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    };
+
 
     return (
         <View style={styles.container}>
-            <PhoneInput
+            <TextInput
+                style={styles.input}
                 ref={phoneInput}
                 defaultValue={value}
-                defaultCode="MX"
-                onChangeFormattedText={(text) => {
+                onChangeText={(text) => {
                     text = text.replace(" ", "");
                     setValue(text);
                 }}
+                placeholder="Escribir número"
                 withDarkTheme
                 withShadow
                 autoFocus
             />
-            <View style={styles.space} />
-            <Text
-                style={styles.txt}
-                onPress={() => { navigation.navigate('Captura') }}
-            >
-                {"Capturar número telefónico"}
-            </Text>
+
             <View style={styles.space} />
             <Button
                 title="Enviar Mensaje"
@@ -120,15 +111,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 30,
-
     }, btn: {
         margin: 10,
         backgroundColor: '#34B7F1'
     }, txt: {
-        color: '#00669a',
-        fontWeight: "bold"  
+        margin: 1,
+        backgroundColor: '#fff',
     }, space: {
         width: 30,
         height: 30,
+    }, input: {
+        width: 250,
+        height: 40,
+        borderWidth: 1,
+        padding: 10,
     },
 });
